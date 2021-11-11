@@ -1,10 +1,14 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { client } from "../../Config/ApolloProviderWithClient";
+import { CREATE_TIME_TABLE } from "../../GraphQL/Mutations/timeTableMutators";
 import { LOAD_TIMETABLE } from "../../GraphQL/Queries/timeTableQueries";
+import { getHourAndMin, parseTime } from "../../utils";
+import { ModalForm } from "../ModalForm";
 import { RoomSelector } from "./RoomSelector";
 import { TherapistSelector } from "./TherapistSelector";
 import { TimeTableEvent } from "./TimeTableEvent";
+import { TimeTableEventForm } from "./TimeTableEventForm";
 import { TimeTableHours } from "./TimeTableHours";
 
 const minHour = 8
@@ -16,24 +20,27 @@ export const TimeTableWrapper = () => {
     const [selectedRoom, setSelectedRoom] = useState(null)
     const [selectedTherapist, setSelectedTherapist] = useState(null)
     const [timeTableSlots, setTimeTableSlots] = useState(null)
+    const [shouldShowModal, setShouldShowModal] = useState(false);
+    const [updated, setUpdated] = useState(null)
+
 
     useEffect(() => {
-        (selectedRoom || selectedTherapist) && (async () => {
-            const response = await client.query({
-                query: LOAD_TIMETABLE,
-                variables: {
-                    roomId: selectedRoom ? selectedRoom.id : "-1",
-                    therapist: selectedTherapist ? selectedTherapist.id : "-1"
-                },
-                partialRefetch: true
-            });
-            const filteredResult = response.data.timeTablesFiltered.filter(t =>
-                (!selectedRoom || t.room.id === selectedRoom.id) &&
-                (!selectedTherapist || t.therapist.id === selectedTherapist.id)
-            )
-            setTimeTableSlots(filteredResult);
-
-        })();
+        ((selectedRoom && selectedRoom.id > -1) || (selectedTherapist && selectedTherapist.id > -1)) &&
+            (async () => {
+                const response = await client.query({
+                    query: LOAD_TIMETABLE,
+                    variables: {
+                        roomId: selectedRoom ? selectedRoom.id : "-1",
+                        therapist: selectedTherapist ? selectedTherapist.id : "-1"
+                    },
+                    fetchPolicy: "no-cache"
+                });
+                const filteredResult = response.data.timeTablesFiltered.filter(t =>
+                    (!selectedRoom || selectedRoom.id < 0 || t.room.id === selectedRoom.id) &&
+                    (!selectedTherapist || selectedTherapist.id < 0 || t.therapist.id === selectedTherapist.id)
+                )
+                setTimeTableSlots(filteredResult);
+            })();
     }, [selectedRoom, selectedTherapist, forceUpdate])
 
     const doForceUpdate = () => {
@@ -52,12 +59,85 @@ export const TimeTableWrapper = () => {
         return [];
     }
 
+    const newEvent = () => {
+        return {
+            id: 0,
+            dayOfWeek: 1,
+            fromTime: "00:00",
+            toTime: "00:00",
+            clients: []
+        }
+    }
+
+    const isEventValid = (event) => {
+        const fromHourAndMin = getHourAndMin(event.fromTime);
+        const toHourAndMin = getHourAndMin(event.toTime);
+        if (fromHourAndMin.hour < minHour) {
+            return `Időpont kezdete nem lehet ${minHour} óra előtti`
+        }
+        if ((fromHourAndMin.hour > toHourAndMin.hour) ||
+            (fromHourAndMin.hour === toHourAndMin.hour && fromHourAndMin.min >= toHourAndMin.min)) {
+            return `Időpont vége nem lehet a kezdete előtti`
+        }
+        if (toHourAndMin.hour > maxHour) {
+            return `Időpont vége nem lehet ${maxHour} óra utáni`
+        }
+        if (!event.therapyType || !event.therapyType.id) {
+            return `Adj meg terápia típust!`
+        }
+        if (!event.therapist || !event.therapist.id) {
+            return `Adj meg terapeutát!`
+        }
+        if (!event.room || !event.room.id) {
+            return `Adj meg szobát!`
+        }
+
+        return;
+    }
+
+    const onModalSave = () => {
+        const event = modalContent.current;
+        const validatorResult = isEventValid(event);
+        if (!validatorResult) {
+            setUpdated(event)
+            setShouldShowModal(false)
+        } else {
+            alert(validatorResult)
+        }
+    }
+
+    useEffect(() => {
+        if (updated) {
+            (async () => {
+                const clients = updated.clients.map(c => c.id)
+                var variables = {
+                    dayOfWeek: updated.dayOfWeek,
+                    fromTime: parseTime(updated.fromTime),
+                    toTime: parseTime(updated.toTime),
+                    therapyType: updated.therapyType.id,
+                    room: updated.room.id,
+                    therapist: updated.therapist.id,
+                    clients: clients
+                };
+                await client.mutate({ mutation: CREATE_TIME_TABLE, variables: variables, updateQueries: ["getTimeTablesFiltered"] })
+                setForceUpdate()
+            })()
+        }
+    }, [updated])
+
+    const modalContent = React.createRef()
+
     return (
         <>
             <div className="toolbar">
                 <RoomSelector className="toolbar-dropdown" onChange={setSelectedRoom} addAllOption={true} />
                 <TherapistSelector className="toolbar-dropdown" onChange={setSelectedTherapist} addAllOption={true} />
-                <FontAwesomeIcon icon="plus" className="toolbar-button" size="3x" />
+                <ModalForm shouldShow={shouldShowModal} onModalSave={onModalSave} onModalCancel={() => setShouldShowModal(false)} entity={newEvent()} ref={modalContent}>
+                    <TimeTableEventForm />
+                </ModalForm>
+                <FontAwesomeIcon icon="plus" size="2x" className="toolbar-button" onClick={() => {
+                    setShouldShowModal(true)
+                }} />
             </div>
             <div className="timetable-header">
                 <div className="timetable-hours"><div className="timetable-hours-hour">Idő</div></div>

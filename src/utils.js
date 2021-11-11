@@ -69,10 +69,17 @@ export const isEqual = (o1, o2) => {
     return true;
 }
 
-export const formatTime = (hourAndMin, withSeconds) => {
-    return `${hourAndMin.hour}:${hourAndMin.min.toString().padStart(2, '0')}${withSeconds ? ":00" : ""}`
+export const formatTime = (hourAndMin, withSeconds, withLeadingZeroInHours) => {
+    var hourPart = `${hourAndMin.hour}`
+    if (withLeadingZeroInHours) {
+        hourPart = `${hourAndMin.hour.toString().padStart(2, '0')}`
+    }
+    return `${hourPart}:${hourAndMin.min.toString().padStart(2, '0')}${withSeconds ? ":00" : ""}`
 }
 
+export const parseTime = (time) => {
+    return formatTime(getHourAndMin(time), true, true) + "+01:00"
+}
 
 export const getMinsFromDayStart = (hoursAndMins, minHour) => {
     return (hoursAndMins.hour - minHour) * 60 + hoursAndMins.min;

@@ -386,6 +386,7 @@ h2 {
     width: 100%;
     height: 30px;
     background-color: var(--clr-timetable-slot);
+    border: inset 1px var(--clr-box-shadow);
 
     &.free {
       background-color: var(--clr-timetable-slot-free);

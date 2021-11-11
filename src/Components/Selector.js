@@ -1,25 +1,15 @@
-import { useEffect } from "react"
-import { useState } from "react/cjs/react.development"
-
-export const Selector = ({ defaultValue, values, onChange, className, descriptionField }) => {
-    const [state, setState] = useState(defaultValue ? defaultValue.id : null)
-
-    useEffect(() => {
-        if (defaultValue) {
-            setState(defaultValue.id)
-        }
-    }, [defaultValue])
+export const Selector = ({ defaultValue, values, addAllOption, onChange, className, descriptionField }) => {
 
     const handleChange = (e) => {
         onChange(values.find(value => value.id === e.target.value))
-        setState(e.target.value)
     }
 
-    return state && (
+    return (
         <div>
             <select className={className}
-                value={state}
+                defaultValue={defaultValue ? defaultValue.id : "-1"}
                 onChange={handleChange}>
+                {addAllOption && <option value={"-1"} key={"-1"} >Válassz!</option>}
                 {values.map((value, index) =>
                     <option value={value.id} key={index}>{value[descriptionField]}</option>
                 )}

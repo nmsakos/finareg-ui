@@ -10,7 +10,6 @@ export const FamilyEditor = ({ familyId }) => {
     const history = useHistory();
 
     const afterSave = (newId) => {
-        console.log(newId);
         history.push(`/families/${newId}/edit`);
     }
 
@@ -27,7 +26,6 @@ export const FamilyEditor = ({ familyId }) => {
 
     const newParent = () => setParents([...parents, { familyId: family.id }]);
     const newClient = () => setClients([...clients, { familyId: family.id }]);
-    console.log(family);
 
     return family && (
         <div className="contentwrapper">

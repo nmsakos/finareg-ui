@@ -24,23 +24,28 @@ export const TimeTableEventForm = ({ entity: event, innerRef }) => {
             }
             setNewEvent(e)
             setOldEvent(event)
+            if (innerRef && !innerRef.current) {
+                innerRef.current = e
+            }
         }
-    }, [event])
-
-    useEffect(() => {
-        if (innerRef) {
-            innerRef.current = newEvent
-        }
-    }, [newEvent, innerRef])
+    }, [event, innerRef])
 
     const doChange = (changes) => {
-        const changed = {
-            ...newEvent,
-            ...changes
-        }
-        setNewEvent(changed)
+        Object.keys(changes).forEach(key => {
+            if (innerRef) {
+                if (innerRef.current[key]) {
+                    if (innerRef.current[key] === changes[key]) {
+                        return
+                    }
+                    innerRef.current[key] = changes[key]
+                } else {
+                    Object.defineProperty(innerRef.current, key, { value: changes[key], writable: true })
+                }
+            }
+        })
+        setNewEvent({...innerRef.current})
     }
-
+    
     const onClientDelete = (client) => {
         doChange({ clients: newEvent.clients.filter(value => value.id !== client.id) })
     }
@@ -66,7 +71,7 @@ export const TimeTableEventForm = ({ entity: event, innerRef }) => {
                     <th>Nap:</th>
                     <td>
                         <select className="form-item-input" name="dayOfWeek" id="dayOfWeek" defaultValue={newEvent.dayOfWeek}
-                            onChange={(e) => doChange({dayOfWeek: e.target.value})} >
+                            onChange={(e) => doChange({ dayOfWeek: e.target.value })} >
                             {days.map((value, index) => {
                                 return (<option key={index} value={index + 1} >{value}</option>)
                             })}
@@ -77,37 +82,37 @@ export const TimeTableEventForm = ({ entity: event, innerRef }) => {
                     <th>Időpont:</th>
                     <td>
                         <input className="form-item-input" name="fromTime"
-                            value={formatIfNotChanged("fromTime")}
-                            onChange={(e) => doChange({fromTime: e.target.value})} />
+                            defaultValue={formatIfNotChanged("fromTime")}
+                            onChange={(e) => doChange({ fromTime: e.target.value })} />
                     </td>
                     <td>
                         <input className="form-item-input" name="toTime"
-                            value={formatIfNotChanged("toTime")}
-                            onChange={(e) => doChange({toTime: e.target.value})} />
+                            defaultValue={formatIfNotChanged("toTime")}
+                            onChange={(e) => doChange({ toTime: e.target.value })} />
                     </td>
                 </tr>
                 <tr>
                     <th>Terápia típus:</th>
                     <td colSpan="2">
                         <TherapyTypeSelector className="form-item-input"
-                            onChange={(therapyType) => doChange({therapyType: therapyType})}
-                            addAllOption={false} defaultValue={newEvent.therapyType} />
+                            onChange={(therapyType) => doChange({ therapyType: therapyType })}
+                            addAllOption={true} defaultValue={newEvent.therapyType} />
                     </td>
                 </tr>
                 <tr>
                     <th>Szoba:</th>
                     <td colSpan="2">
                         <RoomSelector className="form-item-input"
-                            onChange={(room) => doChange({room: room})}
-                            addAllOption={false} defaultValue={newEvent.room} />
+                            onChange={(room) => doChange({ room: room })}
+                            addAllOption={true} defaultValue={newEvent.room} />
                     </td>
                 </tr>
                 <tr>
                     <th>Terapeuta:</th>
                     <td colSpan="2">
                         <TherapistSelector className="form-item-input"
-                            onChange={(therapist) => doChange({therapist: therapist})}
-                            addAllOption={false} defaultValue={newEvent.therapist} />
+                            onChange={(therapist) => doChange({ therapist: therapist })}
+                            addAllOption={true} defaultValue={newEvent.therapist} />
                     </td>
                 </tr>
                 <tr>

@@ -9,7 +9,7 @@ export const PassList = ({ clientId, familyId }) => {
     const onOnlyOpenClick = () => {
         setOnlyOpen(!onlyOpen);
     }
-    console.log(passList)
+    
     return passList && (
         <div>
             <div className="toolbar">

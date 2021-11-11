@@ -39,7 +39,6 @@ export const withEditableFamily = (Component) => {
             setFamily(response.data.updateFamily);
             setOriginalFamily(response.data.updateFamily);
             if (isNew) {
-                console.log(response.data.updateFamily.id);
                 afterSave(response.data.updateFamily.id);
             }
         }
