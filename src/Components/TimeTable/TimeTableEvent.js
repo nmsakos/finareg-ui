@@ -10,7 +10,7 @@ import { UPDATE_TIME_TABLE } from "../../GraphQL/Mutations/timeTableMutators";
 import { configs } from "../../configs";
 import TimeTableEventValidator from "./TimeTableEventValidator";
 
-export const TimeTableEvent = ({ event, doForceUpdate, hidden }) => {
+export const TimeTableEvent = ({ event, doForceUpdate, hidden, overlaps, overlapIndex }) => {
     ReactTooltip.rebuild();
     const [shouldShowModal, setShouldShowModal] = useState(false);
     const [updated, setUpdated] = useState(null)
@@ -18,13 +18,17 @@ export const TimeTableEvent = ({ event, doForceUpdate, hidden }) => {
 
     const fromHourAndMin = getHourAndMin(event.fromTime)
     const toHourAndMin = getHourAndMin(event.toTime)
-    const minutesFromDayStart = getMinsFromDayStart(fromHourAndMin, configs.minHour);
-    const durationMinutes = getMinsFromDayStart(toHourAndMin, configs.minHour) - getMinsFromDayStart(fromHourAndMin, configs.minHour);
+    const minutesFromDayStart = getMinsFromDayStart(fromHourAndMin);
+    const durationMinutes = getMinsFromDayStart(toHourAndMin) - getMinsFromDayStart(fromHourAndMin);
+    const width = 100 / overlaps
+    const left = 100 - (width * overlapIndex)
     const styles = hidden ?
         { display: hidden } :
         {
             marginTop: (minutesFromDayStart * configs.rowHeight * 2) / 60 + "px",
-            height: (durationMinutes * configs.rowHeight * 2) / 60 + "px"
+            height: (durationMinutes * configs.rowHeight * 2) / 60 + "px",
+            width: width + "%",
+            left: left + "%"
         }
     var free = event.clients && event.clients.length > 0 ? false : true
 
@@ -73,11 +77,19 @@ export const TimeTableEvent = ({ event, doForceUpdate, hidden }) => {
 
     const modalContent = React.createRef()
 
+    const showModal = (e) => {
+        e.stopPropagation()
+        tooltip.tooltipRef = null
+        ReactTooltip.hide();
+        setShouldShowModal(true)
+    }
+
     return current ? (
         <>
             <ReactTooltip place="top" type="dark" effect="solid" html={true} id={`timeTable_${key}`} className="timetable-tooltip"
                 ref={el => tooltip = el} />
-            <div className={`timetable-event${free ? " free" : ""}`} style={styles} key={key} data-for={`timeTable_${key}`} data-html={true} data-tip={tooltipText(current)}>
+            <div className={`timetable-event${free ? " free" : ""}`} style={styles} key={key} data-for={`timeTable_${key}`} data-html={true}
+                data-tip={tooltipText(current)} >
                 <div className="timetable-event-captions">
                     <p className="timetable-event-caption">{current && getClientNames(current.clients, 2)}</p>
                     <p className="timetable-event-caption">{current && `${formatTime(getHourAndMin(current.fromTime))} - ${formatTime(getHourAndMin(current.toTime))}`}</p>
@@ -86,11 +98,7 @@ export const TimeTableEvent = ({ event, doForceUpdate, hidden }) => {
                     <ModalForm shouldShow={shouldShowModal} onModalSave={onModalSave} onModalCancel={() => setShouldShowModal(false)} entity={current} ref={modalContent}>
                         <TimeTableEventForm />
                     </ModalForm>
-                    <FontAwesomeIcon icon="edit" className="timetable-event-button" onClick={() => {
-                        tooltip.tooltipRef = null
-                        ReactTooltip.hide();
-                        setShouldShowModal(true)
-                    }} />
+                    <FontAwesomeIcon icon="edit" size="2x" className="timetable-event-button" onClick={showModal} />
                 </div>
             </div>
         </>

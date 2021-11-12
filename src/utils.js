@@ -12,7 +12,7 @@ const isFieldEqual = (o1Val, o2Val) => {
     if (o1IsNull !== o2IsNull) {
         return false;
     }
-    
+
     if (o1IsNull) {
         return true;
     }
@@ -46,12 +46,12 @@ export const isEqual = (o1, o2) => {
 
     if (o1IsNull !== o2IsNull) {
         return false;
-    }    
-    
+    }
+
     if (o1IsNull) {
         return true;
-    } 
-    
+    }
+
     if (Array.isArray(o1)) {
         return isArrayEqual(o1, o2)
     }
@@ -85,6 +85,29 @@ export const parseTime = (time) => {
 
 export const getMinsFromDayStart = (hoursAndMins) => {
     return (hoursAndMins.hour - configs.minHour) * 60 + hoursAndMins.min;
+}
+
+export const compareHourAndMins = (hourAndMin1, hourAndMin2) => {
+    if (hourAndMin1.hour < hourAndMin2.hour) {
+        return -1
+    }
+    if (hourAndMin1.hour > hourAndMin2.hour) {
+        return 1
+    }
+
+    if (hourAndMin1.min < hourAndMin2.min) {
+        return -1
+    }
+    if (hourAndMin1.min > hourAndMin2.min) {
+        return 1
+    }
+
+    return 0
+}
+
+export const periodsOverlaping = (period1, period2) => {
+    return (compareHourAndMins(period1[0], period2[0]) >= 0 && compareHourAndMins(period1[0], period2[1]) < 0) ||
+        (compareHourAndMins(period1[1], period2[0]) > 0 && compareHourAndMins(period1[1], period2[1]) <= 0)
 }
 
 export const getHourAndMin = (time) => {

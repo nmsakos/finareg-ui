@@ -44,9 +44,6 @@ class TimeTableEventValidator {
             return `A klienst a ${duplicate.index + 1}. sorban megadtad még egyszer!`
         }
 
-
-        console.log(event.clients);
-
         return;
     }
 }

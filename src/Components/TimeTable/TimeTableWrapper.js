@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { client } from "../../Config/ApolloProviderWithClient";
 import { CREATE_TIME_TABLE } from "../../GraphQL/Mutations/timeTableMutators";
 import { LOAD_TIMETABLE } from "../../GraphQL/Queries/timeTableQueries";
-import { parseTime } from "../../utils";
+import { getHourAndMin, parseTime, periodsOverlaping } from "../../utils";
 import { ModalForm } from "../ModalForm";
 import { RoomSelector } from "./RoomSelector";
 import { TherapistSelector } from "./TherapistSelector";
@@ -49,10 +49,19 @@ export const TimeTableWrapper = () => {
         if (timeTableSlots) {
             const dayTable = timeTableSlots
                 .filter(slot => slot.dayOfWeek === day)
-                .map(e => {
-                    return <TimeTableEvent key={`tte-${e.id}`} event={e} doForceUpdate={doForceUpdate} />
-                })
-            return dayTable;
+
+            return dayTable.map(e => {
+                const overlaping = dayTable.filter(e1 =>
+                    periodsOverlaping(
+                        [getHourAndMin(e.fromTime), getHourAndMin(e.toTime)],
+                        [getHourAndMin(e1.fromTime), getHourAndMin(e1.toTime)]) ||
+                    periodsOverlaping(
+                        [getHourAndMin(e1.fromTime), getHourAndMin(e1.toTime)],
+                        [getHourAndMin(e.fromTime), getHourAndMin(e.toTime)]))
+
+                const overlapIndex = overlaping.findIndex(e1 => e1.id === e.id)
+                return <TimeTableEvent key={`tte-${e.id}`} event={e} doForceUpdate={doForceUpdate} overlaps={overlaping.length} overlapIndex={overlapIndex + 1} />
+            });
         }
         return [];
     }
@@ -67,7 +76,7 @@ export const TimeTableWrapper = () => {
         }
     }
 
-    
+
 
     const onModalSave = () => {
         const event = modalContent.current;
@@ -104,8 +113,8 @@ export const TimeTableWrapper = () => {
     return (
         <>
             <div className="toolbar">
-                <RoomSelector className="toolbar-dropdown" onChange={setSelectedRoom} addAllOption={true} />
-                <TherapistSelector className="toolbar-dropdown" onChange={setSelectedTherapist} addAllOption={true} />
+                <RoomSelector className="toolbar-dropdown" onChange={setSelectedRoom} addAllOption={true} defaultValue={selectedRoom} />
+                <TherapistSelector className="toolbar-dropdown" onChange={setSelectedTherapist} addAllOption={true} defaultValue={selectedTherapist} />
                 <ModalForm shouldShow={shouldShowModal} onModalSave={onModalSave} onModalCancel={() => setShouldShowModal(false)} entity={newEvent()} ref={modalContent}>
                     <TimeTableEventForm />
                 </ModalForm>
