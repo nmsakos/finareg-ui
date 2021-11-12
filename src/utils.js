@@ -1,3 +1,5 @@
+import { configs } from "./configs";
+
 const isFieldEqual = (o1Val, o2Val) => {
 
     if (o1Val === o2Val) {
@@ -81,8 +83,8 @@ export const parseTime = (time) => {
     return formatTime(getHourAndMin(time), true, true) + "+01:00"
 }
 
-export const getMinsFromDayStart = (hoursAndMins, minHour) => {
-    return (hoursAndMins.hour - minHour) * 60 + hoursAndMins.min;
+export const getMinsFromDayStart = (hoursAndMins) => {
+    return (hoursAndMins.hour - configs.minHour) * 60 + hoursAndMins.min;
 }
 
 export const getHourAndMin = (time) => {
@@ -104,7 +106,7 @@ export const days = [
 export const getClientNames = (clients, limit) => {
     if (clients) {
         if (limit && clients.length > limit) {
-            return "Csoport"
+            return `Csoport (${clients.length})`
         } else if (clients.length > 0) {
             return clients.map(client => client.name).join(", ")
         }

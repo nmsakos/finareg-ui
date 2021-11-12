@@ -3,17 +3,15 @@ import React, { useEffect, useState } from "react";
 import { client } from "../../Config/ApolloProviderWithClient";
 import { CREATE_TIME_TABLE } from "../../GraphQL/Mutations/timeTableMutators";
 import { LOAD_TIMETABLE } from "../../GraphQL/Queries/timeTableQueries";
-import { getHourAndMin, parseTime } from "../../utils";
+import { parseTime } from "../../utils";
 import { ModalForm } from "../ModalForm";
 import { RoomSelector } from "./RoomSelector";
 import { TherapistSelector } from "./TherapistSelector";
 import { TimeTableEvent } from "./TimeTableEvent";
 import { TimeTableEventForm } from "./TimeTableEventForm";
+import TimeTableEventValidator from "./TimeTableEventValidator";
 import { TimeTableHours } from "./TimeTableHours";
 
-const minHour = 8
-const maxHour = 19
-const rowHeight = 30
 
 export const TimeTableWrapper = () => {
     const [forceUpdate, setForceUpdate] = useState(0)
@@ -52,7 +50,7 @@ export const TimeTableWrapper = () => {
             const dayTable = timeTableSlots
                 .filter(slot => slot.dayOfWeek === day)
                 .map(e => {
-                    return <TimeTableEvent key={`tte-${e.id}`} event={e} rowHeight={rowHeight} minHour={minHour} doForceUpdate={doForceUpdate} />
+                    return <TimeTableEvent key={`tte-${e.id}`} event={e} doForceUpdate={doForceUpdate} />
                 })
             return dayTable;
         }
@@ -69,35 +67,11 @@ export const TimeTableWrapper = () => {
         }
     }
 
-    const isEventValid = (event) => {
-        const fromHourAndMin = getHourAndMin(event.fromTime);
-        const toHourAndMin = getHourAndMin(event.toTime);
-        if (fromHourAndMin.hour < minHour) {
-            return `Időpont kezdete nem lehet ${minHour} óra előtti`
-        }
-        if ((fromHourAndMin.hour > toHourAndMin.hour) ||
-            (fromHourAndMin.hour === toHourAndMin.hour && fromHourAndMin.min >= toHourAndMin.min)) {
-            return `Időpont vége nem lehet a kezdete előtti`
-        }
-        if (toHourAndMin.hour > maxHour) {
-            return `Időpont vége nem lehet ${maxHour} óra utáni`
-        }
-        if (!event.therapyType || !event.therapyType.id) {
-            return `Adj meg terápia típust!`
-        }
-        if (!event.therapist || !event.therapist.id) {
-            return `Adj meg terapeutát!`
-        }
-        if (!event.room || !event.room.id) {
-            return `Adj meg szobát!`
-        }
-
-        return;
-    }
+    
 
     const onModalSave = () => {
         const event = modalContent.current;
-        const validatorResult = isEventValid(event);
+        const validatorResult = TimeTableEventValidator.isEventValid(event);
         if (!validatorResult) {
             setUpdated(event)
             setShouldShowModal(false)
@@ -151,7 +125,7 @@ export const TimeTableWrapper = () => {
             </div>
             <div className="timetable">
                 <div className="timetable-hours">
-                    <TimeTableHours minHour={minHour} maxHour={maxHour} />
+                    <TimeTableHours />
                 </div>
                 <div className="timetable-days">
                     <div key="ttd-1" className="timetable-day monday" >{getEventsOfDay(1)}</div>

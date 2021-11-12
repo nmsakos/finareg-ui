@@ -2,6 +2,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useEffect } from "react"
 import { useState } from "react/cjs/react.development"
 import { days, formatTime, getHourAndMin } from "../../utils"
+import { ClientSelector } from "../Family/ClientSelector"
 import { TherapyTypeSelector } from "../Therapy/TherapyTypeSelector"
 import { RoomSelector } from "./RoomSelector"
 import { TherapistSelector } from "./TherapistSelector"
@@ -20,7 +21,9 @@ export const TimeTableEventForm = ({ entity: event, innerRef }) => {
                 therapyType: event.therapyType,
                 room: event.room,
                 therapist: event.therapist,
-                clients: event.clients
+                clients: event.clients.map(c => {
+                    return { ...c, isNew: false }
+                })
             }
             setNewEvent(e)
             setOldEvent(event)
@@ -43,15 +46,21 @@ export const TimeTableEventForm = ({ entity: event, innerRef }) => {
                 }
             }
         })
-        setNewEvent({...innerRef.current})
+        setNewEvent({ ...innerRef.current })
     }
-    
-    const onClientDelete = (client) => {
-        doChange({ clients: newEvent.clients.filter(value => value.id !== client.id) })
+
+    const onClientDelete = (index) => {
+        doChange({ clients: newEvent.clients.filter((c,i) => i !== index) })
     }
 
     const addClient = () => {
-        console.log("Add Client")
+        const newClient = { id: "-1", name: "", isNew: true }
+        doChange({ clients: [...newEvent.clients, newClient] })
+    }
+
+    const onClientChange = (client, index) => {
+        const newClients = newEvent.clients
+        newClients[index] = client
     }
 
     const formatIfNotChanged = (fieldName) => {
@@ -61,6 +70,36 @@ export const TimeTableEventForm = ({ entity: event, innerRef }) => {
         else {
             return newEvent[fieldName]
         }
+    }
+
+    const createOldClientRow = (value, index) => {
+        return (
+            <>
+                <div className="form-label-input">{value.name}</div>
+                <FontAwesomeIcon icon={["far", "minus-square"]} onClick={() => onClientDelete(index)} />
+            </>
+        )
+    }
+
+    const createNewClientRow = (value, index) => {
+        return (
+            <>
+                <ClientSelector key={index} className="form-label-input" onChange={(client) => onClientChange(client, index)} addAllOption={true} defaultValue={value}  />
+                <FontAwesomeIcon icon={["far", "minus-square"]} onClick={() => onClientDelete(index)} />
+            </>
+        )
+    }
+
+    const createClientRow = (value, index) => {
+        return (
+            <div key={index} className="flex-table row" >
+                {!value.isNew ? createOldClientRow(value, index) : createNewClientRow(value, index)}
+            </div>
+        )
+    }
+
+    const listClients = () => {
+        return newEvent.clients.map((value, index) => createClientRow(value, index))
     }
 
     return (
@@ -119,11 +158,7 @@ export const TimeTableEventForm = ({ entity: event, innerRef }) => {
                     <th>Kliensek:</th>
                     <td colSpan="2">
                         <div className="flex-table column" >
-                            {newEvent.clients.map((value, index) =>
-                                <div key={index} className="flex-table row" >
-                                    <div className="form-label-input">{value.name}</div>
-                                    <FontAwesomeIcon icon={["far", "minus-square"]} onClick={() => onClientDelete(value)} />
-                                </div>)}
+                            {listClients()}
                             <FontAwesomeIcon icon={["far", "plus-square"]} onClick={addClient} />
                         </div>
                     </td>

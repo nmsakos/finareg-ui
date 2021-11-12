@@ -7,8 +7,10 @@ import { ModalForm } from "../ModalForm";
 import React, { useEffect } from "react";
 import { client } from "../../Config/ApolloProviderWithClient";
 import { UPDATE_TIME_TABLE } from "../../GraphQL/Mutations/timeTableMutators";
+import { configs } from "../../configs";
+import TimeTableEventValidator from "./TimeTableEventValidator";
 
-export const TimeTableEvent = ({ event, rowHeight, minHour, doForceUpdate, hidden }) => {
+export const TimeTableEvent = ({ event, doForceUpdate, hidden }) => {
     ReactTooltip.rebuild();
     const [shouldShowModal, setShouldShowModal] = useState(false);
     const [updated, setUpdated] = useState(null)
@@ -16,13 +18,13 @@ export const TimeTableEvent = ({ event, rowHeight, minHour, doForceUpdate, hidde
 
     const fromHourAndMin = getHourAndMin(event.fromTime)
     const toHourAndMin = getHourAndMin(event.toTime)
-    const minutesFromDayStart = getMinsFromDayStart(fromHourAndMin, minHour);
-    const durationMinutes = getMinsFromDayStart(toHourAndMin, minHour) - getMinsFromDayStart(fromHourAndMin, minHour);
+    const minutesFromDayStart = getMinsFromDayStart(fromHourAndMin, configs.minHour);
+    const durationMinutes = getMinsFromDayStart(toHourAndMin, configs.minHour) - getMinsFromDayStart(fromHourAndMin, configs.minHour);
     const styles = hidden ?
         { display: hidden } :
         {
-            marginTop: (minutesFromDayStart * rowHeight * 2) / 60 + "px",
-            height: (durationMinutes * rowHeight * 2) / 60 + "px"
+            marginTop: (minutesFromDayStart * configs.rowHeight * 2) / 60 + "px",
+            height: (durationMinutes * configs.rowHeight * 2) / 60 + "px"
         }
     var free = event.clients && event.clients.length > 0 ? false : true
 
@@ -59,8 +61,14 @@ export const TimeTableEvent = ({ event, rowHeight, minHour, doForceUpdate, hidde
     var tooltip = null;
 
     const onModalSave = () => {
-        setUpdated(modalContent.current)
-        setShouldShowModal(false)
+        const event = modalContent.current
+        const validatorResult = TimeTableEventValidator.isEventValid(event);
+        if (!validatorResult) {
+            setUpdated(event)
+            setShouldShowModal(false)
+        } else {
+            alert(validatorResult)
+        }
     }
 
     const modalContent = React.createRef()

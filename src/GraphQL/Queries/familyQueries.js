@@ -62,6 +62,18 @@ export const LOAD_CLIENT = gql`
     }
 `
 
+export const LOAD_CLIENTS = gql`
+    query getClients {
+        clients {
+            id
+            name
+            phone
+            email
+            familyId
+        }
+    }
+`
+
 export const LOAD_PARENTS_OF_FAMILY = gql`
     query getParentsOfFamily($familyId: ID!) {
         parentsOfFamily(famlyId: $familyId) {
