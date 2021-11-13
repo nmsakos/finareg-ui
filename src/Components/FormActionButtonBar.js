@@ -6,7 +6,7 @@ export const FormActionButtonBar = ({onSaveClick, onResetClick, onRemoveClick, u
         <div className="svg-buttonbar">
             {onSaveClick && (<button className="button-new-resource" onClick={onSaveClick} ><FontAwesomeIcon icon="save" />Mentés</button>)}
             {onResetClick && (<button className="button-new-resource" onClick={onResetClick} ><FontAwesomeIcon icon="undo"/>Mégsem</button>)}
-            {onRemoveClick && (<button className="button-new-resource" onClick={onRemoveClick} ><FontAwesomeIcon icon="trash" /></button>)}
+            {onRemoveClick && (<button className="button-new-resource" onClick={onRemoveClick} ><FontAwesomeIcon icon="trash" />Törlés</button>)}
         </div>
     )
     : (

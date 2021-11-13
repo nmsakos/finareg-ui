@@ -27,3 +27,9 @@ export const UPDATE_TIME_TABLE = gql`
     }
 `
 
+export const DELETE_TIME_TABLE = gql`
+    mutation deleteTimeSlot($id: ID!) {
+        deleteTimeTableSlot(timeSlot: $id) 
+    }
+`
+

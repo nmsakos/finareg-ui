@@ -1,6 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
 import { client } from "../../Config/ApolloProviderWithClient";
+import { configs } from "../../configs";
 import { CREATE_TIME_TABLE } from "../../GraphQL/Mutations/timeTableMutators";
 import { LOAD_TIMETABLE } from "../../GraphQL/Queries/timeTableQueries";
 import { getHourAndMin, parseTime, periodsOverlaping } from "../../utils";
@@ -70,8 +71,8 @@ export const TimeTableWrapper = () => {
         return {
             id: 0,
             dayOfWeek: 1,
-            fromTime: "00:00",
-            toTime: "00:00",
+            fromTime: `${configs.minHour}:00`,
+            toTime: `${configs.maxHour}:00`,
             clients: []
         }
     }

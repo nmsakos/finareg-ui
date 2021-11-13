@@ -6,7 +6,7 @@ import { TimeTableEventForm } from "./TimeTableEventForm";
 import { ModalForm } from "../ModalForm";
 import React, { useEffect } from "react";
 import { client } from "../../Config/ApolloProviderWithClient";
-import { UPDATE_TIME_TABLE } from "../../GraphQL/Mutations/timeTableMutators";
+import { DELETE_TIME_TABLE, UPDATE_TIME_TABLE } from "../../GraphQL/Mutations/timeTableMutators";
 import { configs } from "../../configs";
 import TimeTableEventValidator from "./TimeTableEventValidator";
 
@@ -14,6 +14,7 @@ export const TimeTableEvent = ({ event, doForceUpdate, hidden, overlaps, overlap
     ReactTooltip.rebuild();
     const [shouldShowModal, setShouldShowModal] = useState(false);
     const [updated, setUpdated] = useState(null)
+    const [deleted, setDeleted] = useState(null)
     const [current, setCurrent] = useState(event)
 
     const fromHourAndMin = getHourAndMin(event.fromTime)
@@ -61,6 +62,16 @@ export const TimeTableEvent = ({ event, doForceUpdate, hidden, overlaps, overlap
         }
     }, [event])
 
+    useEffect(() => {
+        if (deleted) {
+            (async () => {
+                const result = await client.mutate({ mutation: DELETE_TIME_TABLE, variables: { id: deleted.id } })
+                setDeleted(null)
+                doForceUpdate()
+            })()
+        }
+    }, [deleted, doForceUpdate])
+
     const key = event.id;
     var tooltip = null;
 
@@ -84,6 +95,11 @@ export const TimeTableEvent = ({ event, doForceUpdate, hidden, overlaps, overlap
         setShouldShowModal(true)
     }
 
+    const doDelete = (event) => {
+        setDeleted(event)
+        setShouldShowModal(false)
+    }
+
     return current ? (
         <>
             <ReactTooltip place="top" type="dark" effect="solid" html={true} id={`timeTable_${key}`} className="timetable-tooltip"
@@ -95,7 +111,10 @@ export const TimeTableEvent = ({ event, doForceUpdate, hidden, overlaps, overlap
                     <p className="timetable-event-caption">{current && `${formatTime(getHourAndMin(current.fromTime))} - ${formatTime(getHourAndMin(current.toTime))}`}</p>
                 </div>
                 <div className="timetable-event-buttons">
-                    <ModalForm shouldShow={shouldShowModal} onModalSave={onModalSave} onModalCancel={() => setShouldShowModal(false)} entity={current} ref={modalContent}>
+                    <ModalForm shouldShow={shouldShowModal} onModalSave={onModalSave}
+                        onModalCancel={() => setShouldShowModal(false)}
+                        onDeleteClick={() => doDelete(current)}
+                        entity={current} ref={modalContent}>
                         <TimeTableEventForm />
                     </ModalForm>
                     <FontAwesomeIcon icon="edit" size="2x" className="timetable-event-button" onClick={showModal} />

@@ -1,7 +1,7 @@
 import React from "react";
 import { FormActionButtonBar } from "./FormActionButtonBar";
 
-export const ModalForm = React.forwardRef(({ shouldShow, onModalSave, onModalCancel, entity, children }, ref) => {
+export const ModalForm = React.forwardRef(({ shouldShow, onModalSave, onModalCancel, onDeleteClick, entity, children }, ref) => {
     return shouldShow ? (
         <div className="modal-background" >
             <div className="modal-body" >
@@ -12,7 +12,7 @@ export const ModalForm = React.forwardRef(({ shouldShow, onModalSave, onModalCan
 
                     return child;
                 })}
-                <FormActionButtonBar onSaveClick={onModalSave} onResetClick={onModalCancel} useButtons />
+                <FormActionButtonBar onSaveClick={onModalSave} onResetClick={onModalCancel} onRemoveClick={onDeleteClick} useButtons />
             </div>
         </div>
     ) : null;
