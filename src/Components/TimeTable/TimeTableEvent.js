@@ -65,7 +65,7 @@ export const TimeTableEvent = ({ event, doForceUpdate, hidden, overlaps, overlap
     useEffect(() => {
         if (deleted) {
             (async () => {
-                const result = await client.mutate({ mutation: DELETE_TIME_TABLE, variables: { id: deleted.id } })
+                await client.mutate({ mutation: DELETE_TIME_TABLE, variables: { id: deleted.id } })
                 setDeleted(null)
                 doForceUpdate()
             })()
