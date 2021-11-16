@@ -48,6 +48,10 @@ export const isEqual = (o1, o2) => {
         return false;
     }
 
+    if (typeof o1 !== typeof o2) {
+        return false;
+    }
+
     if (o1IsNull) {
         return true;
     }
@@ -60,7 +64,7 @@ export const isEqual = (o1, o2) => {
         return false;
     }
 
-    if (Object.keys(o1).length === 0) {
+    if (Object.keys(o1).length === 0 || typeof o1 !== "object") {
         return o1 === o2;
     }
 
@@ -146,3 +150,12 @@ export const tooltipText = e => e && `
         <p>${e.therapyType ? e.therapyType.description : ""}</p>
 `;
 
+export const dateToString = (event) => new Date(event.date).toLocaleDateString(
+    'hu-HU',
+    {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    }
+)

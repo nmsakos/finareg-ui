@@ -24,7 +24,7 @@ export const TimeTableWrapper = () => {
 
 
     useEffect(() => {
-        ((selectedRoom && selectedRoom.id > -1) || (selectedTherapist && selectedTherapist.id > -1)) &&
+        //((selectedRoom && selectedRoom.id > -1) || (selectedTherapist && selectedTherapist.id > -1)) &&
             (async () => {
                 const response = await client.query({
                     query: LOAD_TIMETABLE,

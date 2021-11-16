@@ -1,8 +1,9 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ReactTooltip from "react-tooltip";
+import { dateToString } from "../../utils";
 import { PassEventTableCell } from "./PassEventTableCell";
 
-const getElementIndex = (i,j) => (i*4)+(j)
+const getElementIndex = (i, j) => (i * 4) + (j)
 
 export const PassEventsTable = ({ events, pass }) => {
     if (pass.id < 1) {
@@ -18,22 +19,17 @@ export const PassEventsTable = ({ events, pass }) => {
             var tooltipText
             const event = events.at(getElementIndex(i, j))
             if (event) {
-                cell = <FontAwesomeIcon icon="check" size="2x" />
-                const dateStr = new Date(event.date).toLocaleDateString(
-                    'hu-HU',
-                    {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric',
-                      timeZone: 'utc'
-                    }
-                  )
-                tooltipText = dateStr;
-            } else {
-                cell = <FontAwesomeIcon icon={["far", "circle"]} size="2x" />
-                tooltipText = ""
+                let icon
+                if (event.state.id === "2") {
+                    icon = "check"
+                } else {
+                    icon = ["far", "circle"]
+                }
+                cell = <FontAwesomeIcon icon={icon} size="2x" />
+                tooltipText = dateToString(event);
+                console.log(icon);
             }
-            cells.push(<PassEventTableCell cellData={cell} tooltipText={tooltipText} key={`${i}-${j}`}/>);
+            cells.push(<PassEventTableCell cellData={cell} tooltipText={tooltipText} key={`${i}-${j}`} />);
         }
         const row = (<tr className="pass-event-table-row" key={i}>{cells}</tr>);
         rows.push(row);
@@ -41,12 +37,13 @@ export const PassEventsTable = ({ events, pass }) => {
 
     return (
         <>
-        <ReactTooltip place="top" type="dark" effect="solid" id="passEventsTable" />
-        <table>
-            <tbody>
-                {rows}
-            </tbody>
-        </table>
+            {ReactTooltip.rebuild()}
+            <ReactTooltip place="top" type="dark" effect="solid" id="passEventsTable" />
+            <table>
+                <tbody>
+                    {rows}
+                </tbody>
+            </table>
         </>
     );
 }

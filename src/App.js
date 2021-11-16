@@ -11,6 +11,8 @@ import { HomePage } from "./Components/HomePage";
 import { PassList } from "./Components/Therapy/PassList";
 import { TimeTableWrapper } from "./Components/TimeTable/TimeTableWrapper";
 import { TimeTableEventForm } from "./Components/TimeTable/TimeTableEventForm";
+import { PassInfo } from "./Components/Therapy/PassInfo";
+import { PassForm } from "./Components/Therapy/PassForm";
 
 library.add(faHome, faUsers, faEdit, faEye, faSave, faUndo, faPlus, 
   faTrash, faArrowLeft, faTicketAlt, faFileInvoiceDollar, faCheck, faCircle,
@@ -38,6 +40,12 @@ function App() {
             <FamilyEditor familyId={match.params.familyId} />
           )} />
           <Route path="/passes" exact component={PassList} />
+          <Route path="/passes/:passId" exact render={({ match }) => (
+            <PassInfo passId={match.params.passId} />
+          )} />
+          <Route path="/passes/:passId/edit" exact render={({ match }) => (
+            <PassForm passId={match.params.passId} />
+          )} />
         </div>
       </div>
     </div>

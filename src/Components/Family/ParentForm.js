@@ -16,7 +16,7 @@ export const ParentForm = withEditableResource(({ parent, onChangeParent, onSave
                 </tr>*/}
                     <tr>
                         <th className="form-item-label"><label>Név:</label></th>
-                        <td><input value={name} onChange={e => onChangeParent({ name: e.target.value })} className="form-item-input" /></td>
+                        <td><input value={name} onChange={(e) => onChangeParent({ name: e.target.value })} className="form-item-input" /></td>
                     </tr>
                     <tr>
                         <th className="form-item-label"><label>Telefon:</label></th>
