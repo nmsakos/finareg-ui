@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 import { clientBody, familyBodyShort } from "./familyQueries";
 
-const therapyPassBody = `
+export const therapyPassBody = `
             id
             client {
                 ${clientBody}
@@ -17,6 +17,9 @@ const therapyPassBody = `
                 id
                 minutes
                 description
+            }
+            firstEvent {
+                id
             }
             eventsTaken
             eventCount

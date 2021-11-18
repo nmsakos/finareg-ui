@@ -7,16 +7,9 @@ import { EventStateSelector } from "./EventStateSelector";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { RoomSelector } from "../TimeTable/RoomSelector";
 import { TherapistSelector } from "../TimeTable/TherapistSelector";
+import { minusOneIfNull } from "../../utils";
 
-const isNull = (field) => {
-    if (field) {
-        return field.id ? field.id : "-1"
-    } else {
-        return "-1"
-    }
-}
-
-export const PassEventsForm = ({ events, onEventChange, onEventAdd, onEventRemove, hasCompleted }) => {
+export const PassEventsForm = ({ pass, events, onEventChange, onEventAdd, onEventRemove, hasCompleted }) => {
     return (
         <table><tbody>
             <tr>
@@ -30,10 +23,12 @@ export const PassEventsForm = ({ events, onEventChange, onEventAdd, onEventRemov
                     </>) : null}
             </tr>
             {events && events.map((e, i) => {
-                const { id, date, state: { id: sid }, therapist, room, client: { id: cId } } = e
+                const { id, date, state: { id: sid }, therapist, room, client } = e
 
-                const thId = isNull(therapist)
-                var rId = isNull(room)
+                const thId = minusOneIfNull(therapist)
+                const rId = minusOneIfNull(room)
+                const cId = minusOneIfNull(client)
+
                 const parsed = parseISO(date, "yyyy-MM-dd'T'HH:mm:ddXXX", new Date(), { locale: hu })
 
                 return <tr key={id}>
@@ -42,7 +37,7 @@ export const PassEventsForm = ({ events, onEventChange, onEventAdd, onEventRemov
                         onChange={(state) => onEventChange(i, { state: state })}
                         addAllOption={false} value={sid} /></td>
                     <td>
-                        <ClientSelector className="form-item-input"
+                        <ClientSelector className="form-item-input" family={pass?.family}
                             onChange={(client) => onEventChange(i, { client: client })}
                             addAllOption={true} value={cId} hidden={sid !== "2"} />
 

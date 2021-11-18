@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { client } from "../../Config/ApolloProviderWithClient";
-import { CREATE_THERAPY_EVENT, UPDATE_THERAPY_EVENT } from "../../GraphQL/Mutations/therapyMutators";
+import { CREATE_THERAPY_EVENT, SAVE_PASS, UPDATE_THERAPY_EVENT } from "../../GraphQL/Mutations/therapyMutators";
 import { LOAD_EVENTS_OF_PASS, LOAD_PASS } from "../../GraphQL/Queries/therapyQueries";
 import { isEqual } from "../../utils";
 import format from "date-fns/format"
@@ -17,10 +17,17 @@ export const withEditablePass = (Component) => {
 
         const onChange = (changed) => {
             setNewPass({ ...newPass, ...changed })
+            if (Object.keys(changed)[0] === "client") {
+                console.log(changed);
+                const changedEvents = newEvents.map((e) => {
+                    return { ...e, ...changed }
+                })
+                setNewEvents(changedEvents)
+            }
+
         }
 
         const onEventChange = (index, changed) => {
-            console.log(changed);
             const changedEvents = newEvents.map((e, i) => {
                 if (i !== index) {
                     return e
@@ -70,12 +77,12 @@ export const withEditablePass = (Component) => {
             await client.mutate({
                 mutation: isNew ? CREATE_THERAPY_EVENT : UPDATE_THERAPY_EVENT,
                 variables: variables,
-                updateQueries: ["getEventsOfPass"] 
+                updateQueries: ["getEventsOfPass"]
             });
         }
 
         const saveEvents = () => {
-            
+
             newEvents.forEach(ne => {
                 const found = events.find(e => e.id === ne.id)
                 if (found) {
@@ -89,9 +96,32 @@ export const withEditablePass = (Component) => {
             setUpdate(update + 1)
         }
 
+        const savePass = async () => {
+            const variables = {
+                id: newPass.id,
+                clientId: newPass.client?.id,
+                familyId: newPass.family?.id,
+                therapyTypeId: newPass.therapyType?.id,
+                eventCount: newPass.eventCount,
+                eventDurationId: newPass.eventDuration?.id,
+                firstEventId: newPass.firstEvent?.id,
+                eventsTaken: newEvents.filter(e => e.state.id === "2").length,
+                invoice: newPass.invoice?.id
+            }
+            await client.mutate({
+                mutation: SAVE_PASS,
+                variables: variables,
+                updateQueries: ["getEventsOfPass"]
+            });
+            setUpdate(update + 1)
+        }
+
         const onSavePass = () => {
             if (isEventsChanged()) {
                 saveEvents()
+            }
+            if (isChanged()) {
+                savePass()
             }
         }
 
@@ -105,7 +135,7 @@ export const withEditablePass = (Component) => {
                 id: 0,
                 client: newPass.client,
                 date: format(new Date(), "yyyy-MM-dd'T'HH:mm:ddXXX"),
-                state: {id: 1},
+                state: { id: 1 },
                 therapyPass: newPass
             }]
             setNewEvents(newArray)
@@ -113,7 +143,7 @@ export const withEditablePass = (Component) => {
         }
 
         const onEventRemove = (index) => {
-            setNewEvents(newEvents.filter((e,i) => i !== index))
+            setNewEvents(newEvents.filter((e, i) => i !== index))
         }
 
         useEffect(() => {

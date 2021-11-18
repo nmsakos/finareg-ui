@@ -21,7 +21,7 @@ export const PassForm = withEditablePass(({ pass, events,
                 <div>
                     <PassBaseForm pass={pass} onChange={onChange} />
                     <h1>Alkalmak:</h1>
-                    <PassEventsForm events={events} onEventChange={onEventChange} onEventAdd={onEventAdd} onEventRemove={onEventRemove} hasCompleted={hasCompleted} />
+                    <PassEventsForm pass={pass} events={events} onEventChange={onEventChange} onEventAdd={onEventAdd} onEventRemove={onEventRemove} hasCompleted={hasCompleted} />
                     {isChanged() ? <FormActionButtonBar onSaveClick={onSavePass} onResetClick={onResetPass} useButtons /> : <></>}
                 </div>
                 <PassEventSummary events={events} />

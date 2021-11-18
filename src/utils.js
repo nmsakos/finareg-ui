@@ -159,3 +159,12 @@ export const dateToString = (date) => new Date(date).toLocaleDateString(
         day: 'numeric'
     }
 )
+
+export const minusOneIfNull = (field) => {
+    if (field) {
+        return field.id ? field.id : "-1"
+    } else {
+        return "-1"
+    }
+}
+
