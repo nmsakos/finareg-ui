@@ -11,7 +11,7 @@ export const useClients = () => {
             console.log(error);
         }
         if (data) {
-            setClients(data.clients.map(value => { return { id: value.id, name: value.name } }));
+            setClients(data.clients);
         }
     }, [error, data]);
 

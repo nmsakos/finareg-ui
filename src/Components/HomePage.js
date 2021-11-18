@@ -1,17 +1,18 @@
 import { useState } from "react";
-import { RoomSelector } from "./TimeTable/RoomSelector";
+import DatePicker from "react-datepicker"
+import "react-datepicker/dist/react-datepicker.css";
 
 export const HomePage = () => {
-    const [selected, setSelected] = useState(null)
+    const [selected, setSelected] = useState(new Date())
     const onChange = (changed) => {
         setSelected(changed)
     }
 
-    return (
+    return selected ? (
         <div className="contentwrapper">
             <h1>Home</h1>
-            <RoomSelector onChange={onChange} />
-            <p>{selected ? selected.description : ""}</p>
+            <DatePicker selected={selected} onChange={onChange} locale="hu" dateFormat="yyyy. MMM. dd" />
+            {/*<p>{selected ? selected : ""}</p>*/}
         </div>
-    );
+    ) : null;
 }

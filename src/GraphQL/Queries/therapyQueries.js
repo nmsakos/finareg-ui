@@ -1,15 +1,13 @@
 import { gql } from "@apollo/client";
+import { clientBody, familyBodyShort } from "./familyQueries";
 
 const therapyPassBody = `
             id
             client {
-                id
-                name
-                familyId
+                ${clientBody}
             }
             family {
-                id
-                name
+                ${familyBodyShort}
             }
             therapyType {
                 id
@@ -22,6 +20,37 @@ const therapyPassBody = `
             }
             eventsTaken
             eventCount
+`
+
+export const therapyEventBody = `
+            id
+            client {
+                ${clientBody}
+            }
+            date
+            week {
+                id
+                year
+                number
+            }
+            dayOfWeek
+            therapist {
+                id
+                name
+                phone
+                email
+            }
+            room {
+                id
+                description
+            }
+            therapyPass {
+                ${therapyPassBody}
+            }
+            state {
+                id
+                description
+            }
 `
 
 export const LOAD_PASSES = gql`
@@ -49,27 +78,7 @@ export const LOAD_PASSES_OF_CLIENT = gql`
 export const LOAD_EVENTS_OF_PASS = gql`
     query getEventsOfPass($passId: ID!, $noCancelled: Boolean!){
         eventsOfPass(passId: $passId, noCancelled: $noCancelled) {
-            id
-            client {
-                id
-                name
-                familyId
-            }
-            date
-            week {
-                id
-                year
-                number
-            }
-            dayOfWeek
-            cancelled
-            therapyPass {
-                ${therapyPassBody}
-            }
-            state {
-                id
-                description
-            }
+            ${therapyEventBody}
         }
     }
 `

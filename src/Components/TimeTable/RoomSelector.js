@@ -1,10 +1,10 @@
 import { useRooms } from "../../Hooks/useRooms";
 import { Selector } from "../Selector";
 
-export const RoomSelector = ({onChange, className, addAllOption, defaultValue}) => {
+export const RoomSelector = ({...props}) => {
     const rooms = useRooms()
 
     return rooms ? (
-        <Selector defaultValue={defaultValue} values={rooms} addAllOption={addAllOption} onChange={onChange} className={className} descriptionField="description"/>
+        <Selector {...props} values={rooms} descriptionField="description"/>
     ) : null;
 }

@@ -1,10 +1,11 @@
 import { useQuery } from "@apollo/client";
 import { useEffect, useState } from "react";
-import { LOAD_FAMILIES } from "../GraphQL/Queries/familyQueries";
+import { LOAD_FAMILIES, LOAD_FAMILIES_SHORT } from "../GraphQL/Queries/familyQueries";
 
-export const useFamilies = () => {
+export const useFamilies = (short) => {
     const [families, setFamilies] = useState([]);
-    const { error, data } = useQuery(LOAD_FAMILIES);
+    const query = short ? LOAD_FAMILIES_SHORT : LOAD_FAMILIES
+    const { error, data } = useQuery(query);
 
     useEffect(() => {
         if (error) {
