@@ -123,11 +123,11 @@ export const getHourAndMin = (time) => {
 }
 
 export const days = [
-    "Hétfő",
-    "Kedd",
-    "Szerda",
-    "Csütörtök",
-    "Péntek"
+    {id: "1", description: "Hétfő"},
+    {id: "2", description: "Kedd"},
+    {id: "3", description: "Szerda"},
+    {id: "4", description: "Csütörtök"},
+    {id: "5", description: "Péntek"}
 ]
 
 export const getClientNames = (clients, limit) => {

@@ -11,9 +11,7 @@ export const useTherapyTypes = () => {
             console.log(error);
         }
         if (data) {
-            let dataTherapyTypes = data.therapyTypes.map(value => { return { id: value.id, description: value.description } });
-
-            setTherapyTypes(dataTherapyTypes);
+            setTherapyTypes(data.therapyTypes);
         }
     }, [error, data]);
 

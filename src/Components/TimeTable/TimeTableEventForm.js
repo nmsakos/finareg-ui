@@ -1,76 +1,20 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { useEffect } from "react"
-import { useState } from "react/cjs/react.development"
-import { days, formatTime, getHourAndMin } from "../../utils"
+import { formatTime, getHourAndMin, minusOneIfNull } from "../../utils"
 import { ClientSelector } from "../Family/ClientSelector"
 import { TherapyTypeSelector } from "../Therapy/TherapyTypeSelector"
+import { DaySelector } from "./DaySelector"
 import { RoomSelector } from "./RoomSelector"
 import { TherapistSelector } from "./TherapistSelector"
+import { withEditableTimeTable } from "./withEditableTimeTable"
 
-export const TimeTableEventForm = ({ entity: event, innerRef }) => {
-    const [oldEvent, setOldEvent] = useState(event)
-    const [newEvent, setNewEvent] = useState(event)
+export const TimeTableEventForm = withEditableTimeTable(({ event, doChange, onClientChange, onClientDelete }) => {
+    const {dayOfWeek, fromTime, toTime, therapyType, room, therapist} = event
 
-    useEffect(() => {
-        if (event) {
-            const e = {
-                id: event.id,
-                dayOfWeek: event.dayOfWeek,
-                fromTime: event.fromTime,
-                toTime: event.toTime,
-                therapyType: event.therapyType,
-                room: event.room,
-                therapist: event.therapist,
-                clients: event.clients.map(c => {
-                    return { ...c, isNew: false }
-                })
-            }
-            setNewEvent(e)
-            setOldEvent(event)
-            if (innerRef && !innerRef.current) {
-                innerRef.current = e
-            }
-        }
-    }, [event, innerRef])
-
-    const doChange = (changes) => {
-        Object.keys(changes).forEach(key => {
-            if (innerRef) {
-                if (innerRef.current[key]) {
-                    if (innerRef.current[key] === changes[key]) {
-                        return
-                    }
-                    innerRef.current[key] = changes[key]
-                } else {
-                    Object.defineProperty(innerRef.current, key, { value: changes[key], writable: true })
-                }
-            }
-        })
-        setNewEvent({ ...innerRef.current })
-    }
-
-    const onClientDelete = (index) => {
-        doChange({ clients: newEvent.clients.filter((c,i) => i !== index) })
-    }
-
-    const addClient = () => {
-        const newClient = { id: "-1", name: "", isNew: true }
-        doChange({ clients: [...newEvent.clients, newClient] })
-    }
-
-    const onClientChange = (client, index) => {
-        const newClients = newEvent.clients
-        newClients[index] = client
-    }
-
-    const formatIfNotChanged = (fieldName) => {
-        if (newEvent[fieldName] === oldEvent[fieldName]) {
-            return formatTime(getHourAndMin(event[fieldName]))
-        }
-        else {
-            return newEvent[fieldName]
-        }
-    }
+    const formatedFromTime = formatTime(getHourAndMin(fromTime))
+    const formatedToTime = formatTime(getHourAndMin(toTime))
+    const ttId = minusOneIfNull(therapyType)
+    const rId = minusOneIfNull(room)
+    const tId = minusOneIfNull(therapist)
 
     const createOldClientRow = (value, index) => {
         return (
@@ -99,34 +43,35 @@ export const TimeTableEventForm = ({ entity: event, innerRef }) => {
     }
 
     const listClients = () => {
-        return newEvent.clients.map((value, index) => createClientRow(value, index))
+        return event.clients.map((value, index) => createClientRow(value, index))
     }
 
-    return (
+    const addClient = () => {
+        const newClient = { id: "-1", name: "", isNew: true }
+        doChange({ clients: [...event.clients, newClient] })
+    }
+
+    return event ? (
         <>
             <h1>Órarend bejegyzés</h1>
             <table><tbody>
                 <tr>
                     <th>Nap:</th>
                     <td>
-                        <select className="form-item-input" name="dayOfWeek" id="dayOfWeek" defaultValue={newEvent.dayOfWeek}
-                            onChange={(e) => doChange({ dayOfWeek: e.target.value })} >
-                            {days.map((value, index) => {
-                                return (<option key={index} value={index + 1} >{value}</option>)
-                            })}
-                        </select>
+                        <DaySelector className="form-item-input" value={dayOfWeek}
+                            onChange={(day) => doChange({ dayOfWeek: day.id })} />
                     </td>
                 </tr>
                 <tr>
                     <th>Időpont:</th>
                     <td>
                         <input className="form-item-input" name="fromTime"
-                            defaultValue={formatIfNotChanged("fromTime")}
+                            value={formatedFromTime}
                             onChange={(e) => doChange({ fromTime: e.target.value })} />
                     </td>
                     <td>
                         <input className="form-item-input" name="toTime"
-                            defaultValue={formatIfNotChanged("toTime")}
+                            value={formatedToTime}
                             onChange={(e) => doChange({ toTime: e.target.value })} />
                     </td>
                 </tr>
@@ -135,7 +80,7 @@ export const TimeTableEventForm = ({ entity: event, innerRef }) => {
                     <td colSpan="2">
                         <TherapyTypeSelector className="form-item-input"
                             onChange={(therapyType) => doChange({ therapyType: therapyType })}
-                            addAllOption={true} defaultValue={newEvent.therapyType} />
+                            addAllOption={true} value={ttId} />
                     </td>
                 </tr>
                 <tr>
@@ -143,7 +88,7 @@ export const TimeTableEventForm = ({ entity: event, innerRef }) => {
                     <td colSpan="2">
                         <RoomSelector className="form-item-input"
                             onChange={(room) => doChange({ room: room })}
-                            addAllOption={true} defaultValue={newEvent.room} />
+                            addAllOption={true} value={rId} />
                     </td>
                 </tr>
                 <tr>
@@ -151,7 +96,7 @@ export const TimeTableEventForm = ({ entity: event, innerRef }) => {
                     <td colSpan="2">
                         <TherapistSelector className="form-item-input"
                             onChange={(therapist) => doChange({ therapist: therapist })}
-                            addAllOption={true} defaultValue={newEvent.therapist} />
+                            addAllOption={true} value={tId} />
                     </td>
                 </tr>
                 <tr>
@@ -165,5 +110,5 @@ export const TimeTableEventForm = ({ entity: event, innerRef }) => {
                 </tr>
             </tbody></table>
         </>
-    )
-}
+    ) : null
+})
