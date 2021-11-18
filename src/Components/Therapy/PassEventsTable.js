@@ -26,7 +26,7 @@ export const PassEventsTable = ({ events, pass }) => {
                     icon = ["far", "circle"]
                 }
                 cell = <FontAwesomeIcon icon={icon} size="2x" />
-                tooltipText = dateToString(event);
+                tooltipText = dateToString(event.date);
                 console.log(icon);
             }
             cells.push(<PassEventTableCell cellData={cell} tooltipText={tooltipText} key={`${i}-${j}`} />);

@@ -150,7 +150,7 @@ export const tooltipText = e => e && `
         <p>${e.therapyType ? e.therapyType.description : ""}</p>
 `;
 
-export const dateToString = (event) => new Date(event.date).toLocaleDateString(
+export const dateToString = (date) => new Date(date).toLocaleDateString(
     'hu-HU',
     {
         weekday: 'long',

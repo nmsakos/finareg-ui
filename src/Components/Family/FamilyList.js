@@ -3,7 +3,7 @@ import '../../App.scss';
 import { FamilyCard } from "./FamilyCard";
 
 export const FamilyList = () => {
-    const familyList = useFamilies([]);
+    const familyList = useFamilies();
 
     return (
         <div className="family-card-container">

@@ -1,4 +1,4 @@
-export const Selector = ({ value, values, addAllOption, onChange, className, descriptionField }) => {
+export const Selector = ({ values, addAllOption, onChange, descriptionField, ...props }) => {
 
     const handleChange = (e) => {
         onChange(values.find(value => value.id === e.target.value))
@@ -6,8 +6,7 @@ export const Selector = ({ value, values, addAllOption, onChange, className, des
 
     return (
         <div>
-            <select className={className}
-                value={value}
+            <select {...props}
                 onChange={handleChange}>
                 {addAllOption && <option value={"-1"} key={"-1"} >Válassz!</option>}
                 {values.map((value, index) =>

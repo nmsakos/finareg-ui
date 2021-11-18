@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { client } from "../../Config/ApolloProviderWithClient";
 import { CREATE_THERAPY_EVENT, UPDATE_THERAPY_EVENT } from "../../GraphQL/Mutations/therapyMutators";
 import { LOAD_EVENTS_OF_PASS, LOAD_PASS } from "../../GraphQL/Queries/therapyQueries";
-import { dateToString, isEqual } from "../../utils";
+import { isEqual } from "../../utils";
+import format from "date-fns/format"
 
 export const withEditablePass = (Component) => {
     return props => {
@@ -18,10 +19,10 @@ export const withEditablePass = (Component) => {
             setNewPass({ ...newPass, ...changed })
         }
 
-        const onEventChange = (event, changed) => {
+        const onEventChange = (index, changed) => {
             console.log(changed);
-            const changedEvents = newEvents.map(e => {
-                if (e.id !== event.id) {
+            const changedEvents = newEvents.map((e, i) => {
+                if (i !== index) {
                     return e
                 } else {
                     return { ...e, ...changed }
@@ -99,6 +100,22 @@ export const withEditablePass = (Component) => {
             setNewEvents(events)
         }
 
+        const onEventAdd = () => {
+            const newArray = [...newEvents, {
+                id: 0,
+                client: newPass.client,
+                date: format(new Date(), "yyyy-MM-dd'T'HH:mm:ddXXX"),
+                state: {id: 1},
+                therapyPass: newPass
+            }]
+            setNewEvents(newArray)
+            console.log(newArray);
+        }
+
+        const onEventRemove = (index) => {
+            setNewEvents(newEvents.filter((e,i) => i !== index))
+        }
+
         useEffect(() => {
             (async () => {
                 const response = await client.query({
@@ -110,13 +127,6 @@ export const withEditablePass = (Component) => {
                     fetchPolicy: "no-cache"
                 });
                 const data = response.data.eventsOfPass
-                    .map(e => {
-                        const add = { dateStr: dateToString(e) }
-                        return {
-                            ...e,
-                            ...add
-                        }
-                    });
                 setEvents(data)
                 setNewEvents(data)
             })();
@@ -143,6 +153,8 @@ export const withEditablePass = (Component) => {
             onResetPass={onResetPass}
             isChanged={isChanged}
             hasCompleted={hasCompleted}
+            onEventAdd={onEventAdd}
+            onEventRemove={onEventRemove}
         /> : null
     }
 }
