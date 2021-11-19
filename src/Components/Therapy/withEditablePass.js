@@ -27,12 +27,42 @@ export const withEditablePass = (Component) => {
 
         }
 
+        const doEventChange = (original, change) => {
+            if (Object.keys(change)[0] === "state") {
+                if (change.state.id === "2") {
+                    if (!original.client) {
+                        if (newPass.client) {
+                            change.client = newPass.client
+                        } else {
+                            const firstWithClient = newEvents.find(e => e.client)
+                            if (firstWithClient) {
+                                change.client = firstWithClient.client
+                            }
+                        }
+                    }
+                    if (!original.therapist) {
+                        const firstWithTherapist = newEvents.find(e => e.therapist)
+                        if (firstWithTherapist) {
+                            change.therapist = firstWithTherapist.therapist
+                        }
+                    }
+                    if (!original.room) {
+                        const firstWithRoom = newEvents.find(e => e.room)
+                        if (firstWithRoom) {
+                            change.room = firstWithRoom.room
+                        }
+                    }
+                }
+            }
+            return { ...original, ...change }
+        }
+
         const onEventChange = (index, changed) => {
             const changedEvents = newEvents.map((e, i) => {
                 if (i !== index) {
                     return e
                 } else {
-                    return { ...e, ...changed }
+                    return doEventChange(e, changed)
                 }
             })
             setNewEvents(changedEvents)
@@ -64,15 +94,16 @@ export const withEditablePass = (Component) => {
             return !isNew ? { id: event.id, ...variables } : variables
         }
 
-        const clearTherapistAndRoomIfNotCmplete = (event) => {
+        const clearFieldsIfNotCmplete = (event) => {
             if (event.state.id !== "2") {
+                event.client = null
                 event.therapist = null
                 event.room = null
             }
         }
 
         const saveEvent = async (isNew, event) => {
-            clearTherapistAndRoomIfNotCmplete(event)
+            clearFieldsIfNotCmplete(event)
             const variables = createVariables(isNew, event)
             await client.mutate({
                 mutation: isNew ? CREATE_THERAPY_EVENT : UPDATE_THERAPY_EVENT,

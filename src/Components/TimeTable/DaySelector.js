@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react"
 import { days } from "../../utils"
 import { Selector } from "../Selector"
 
