@@ -7,9 +7,8 @@ export const ModalForm = React.forwardRef(({ shouldShow, onModalSave, onModalCan
             <div className="modal-body" >
                 {React.Children.map(children, child => {
                     if (React.isValidElement(child)) {
-                        return React.cloneElement(child, { entity: entity, onSaveClick: onModalSave, onResetClick: onModalCancel, innerRef: ref });
+                        return React.cloneElement(child, {innerRef: ref, ...child.props });
                     }
-
                     return child;
                 })}
                 <FormActionButtonBar onSaveClick={onModalSave} onResetClick={onModalCancel} onRemoveClick={onDeleteClick} useButtons />

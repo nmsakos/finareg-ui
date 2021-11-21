@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 
 export const withEditableTimeTable = (Component) => {
     return props => {
-        const event = props["entity"]
+        const event = props["event"]
         const innerRef = props["innerRef"]
         const [, setOldEvent] = useState(event)
         const [newEvent, setNewEvent] = useState(event)

@@ -114,8 +114,8 @@ export const TimeTableEvent = ({ event, doForceUpdate, hidden, overlaps, overlap
                     <ModalForm shouldShow={shouldShowModal} onModalSave={onModalSave}
                         onModalCancel={() => setShouldShowModal(false)}
                         onDeleteClick={() => doDelete(current)}
-                        entity={current} ref={modalContent}>
-                        <TimeTableEventForm />
+                        ref={modalContent}>
+                        <TimeTableEventForm event={current} ref={modalContent}/>
                     </ModalForm>
                     <FontAwesomeIcon icon="edit" size="2x" className="timetable-event-button" onClick={showModal} />
                 </div>

@@ -1,7 +1,7 @@
 import gql from "graphql-tag";
 
 export const LOAD_ROOMS = gql`
-    query {
+    query getRooms {
         rooms {
             id
             description

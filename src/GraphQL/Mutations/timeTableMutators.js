@@ -32,4 +32,3 @@ export const DELETE_TIME_TABLE = gql`
         deleteTimeTableSlot(timeSlot: $id) 
     }
 `
-

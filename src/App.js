@@ -4,7 +4,7 @@ import { FamilyList } from "./Components/Family/FamilyList";
 import { FamilyEditor } from "./Components/Family/FamilyEditor";
 import { Nav } from "./Components/Nav";
 import "./App.scss";
-import { faArrowLeft, faCheck, faEdit, faFileInvoiceDollar, faHome, faPlus, faSave, faTicketAlt, faTrash, faUndo, faUsers } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft, faCheck, faEdit, faFileInvoiceDollar, faHome, faPencilRuler, faPlus, faSave, faTicketAlt, faTrash, faUndo, faUsers } from "@fortawesome/free-solid-svg-icons";
 import { faCalendarAlt, faCircle, faEye, faMinusSquare, faPlusSquare } from "@fortawesome/free-regular-svg-icons";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { HomePage } from "./Components/HomePage";
@@ -13,10 +13,11 @@ import { TimeTableWrapper } from "./Components/TimeTable/TimeTableWrapper";
 import { TimeTableEventForm } from "./Components/TimeTable/TimeTableEventForm";
 import { PassInfo } from "./Components/Therapy/PassInfo";
 import { PassForm } from "./Components/Therapy/PassForm";
+import { BaseDataList } from "./Components/Basedata/BaseDataList";
 
-library.add(faHome, faUsers, faEdit, faEye, faSave, faUndo, faPlus, 
+library.add(faHome, faUsers, faEdit, faEye, faSave, faUndo, faPlus,
   faTrash, faArrowLeft, faTicketAlt, faFileInvoiceDollar, faCheck, faCircle,
-  faCalendarAlt, faMinusSquare, faPlusSquare);
+  faCalendarAlt, faMinusSquare, faPlusSquare, faPencilRuler);
 
 function App() {
   return (
@@ -28,16 +29,22 @@ function App() {
         <Nav />
         <div className="content">
           <Route path="/" exact component={HomePage} />
-          <Route path="/families" exact component={FamilyList} />
+
+          <Route path="/basedata" exact component={BaseDataList} />
+
+
           <Route path="/timetables" exact component={TimeTableWrapper} />
           <Route path="/timetables/:eventId" exact render={({ match }) => (
             <TimeTableEventForm eventId={match.params.eventId} />
           )} />
+
+          <Route path="/families" exact component={FamilyList} />
           <Route path="/families/:familyId" exact render={({ match }) => (
             <FamilyInfo familyId={match.params.familyId} />
           )} />
           <Route path="/families/:familyId/edit" exact render={({ match }) => (
             <FamilyEditor familyId={match.params.familyId} />
+
           )} />
           <Route path="/passes" exact component={PassList} />
           <Route path="/passes/:passId" exact render={({ match }) => (

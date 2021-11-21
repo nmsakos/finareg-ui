@@ -12,6 +12,12 @@ export const Nav = () => (
                 </Link>
             </li>
             <li className="nav__item">
+                <Link to="/basedata">
+                    <FontAwesomeIcon icon="pencil-ruler" size="2x" />
+                    <p className="nav__itemlabel">Alapok</p>
+                </Link>
+            </li>
+            <li className="nav__item">
                 <Link to="/families">
                     <FontAwesomeIcon icon="users" size="2x" />
                     <p className="nav__itemlabel">Családok</p>
