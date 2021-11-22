@@ -10,7 +10,7 @@ export const withBaseDataList = (Component, LOAD, SAVE, queryName, headerText) =
         const [inUpdate, setInUpdate] = useState(null)
         const [forceUpdate, setForceUpdate] = useState(0)
         const qName = "get" + queryName[0].toUpperCase()+queryName.slice(1)
-console.log(qName);
+        
         const onModalSave = () => {
             const entity = inUpdate;
             setUpdated(entity)
@@ -20,11 +20,9 @@ console.log(qName);
         const onModalCancel = () => setShouldShowModal(false)
 
         useEffect(() => {
-            console.log("updated");
             if (updated) {
                 (async () => {
                     var variables = updated;
-                    console.log(variables);
                     await client.mutate({ mutation: SAVE, variables: variables, updateQueries: [qName] })
                     setUpdated(null)
                     setForceUpdate(forceUpdate + 1)
@@ -35,7 +33,6 @@ console.log(qName);
 
         const newEntityId = () => {
             const max = Math.max.apply(Math, list.map((entity) => parseInt(entity.id)))
-            console.log(max);
             return max + 1
         }
 
@@ -43,12 +40,13 @@ console.log(qName);
             if (queryName) {
                 (async () => {
                     const response = await client.query({
-                        query: LOAD
+                        query: LOAD,
+                        fetchPolicy: "no-cache"
                     });
                     setList(response.data[queryName]);
                 })();
             }
-        })
+        }, [forceUpdate])
 
         const onChange = (changes) => {
             setInUpdate({...inUpdate, ...changes})
