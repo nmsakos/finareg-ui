@@ -56,6 +56,14 @@ th {
   background-color: inherit;
   text-align: left;
   vertical-align: top;
+
+  &.date {
+    max-width: 25px;
+  }
+
+  &.status {
+    max-width: 25px;
+  }
 }
 
 h1 {
@@ -277,10 +285,7 @@ h2 {
 .pass-event-table-col {
   border: var(--border);
   width: 50px;
-}
-
-.pass-event-table-row {
-  height: 50px;
+  text-align: center;
 }
 
 .toolbar {
@@ -288,7 +293,7 @@ h2 {
   flex-flow: row wrap;
   flex: 0 0 auto;
   width: 100%;
-  height: 75px;
+  height: 45px;
   box-shadow: var(--box-shadow);
   margin: 0 0 5px;
   background-color: var(--clr-card-new);
@@ -454,9 +459,15 @@ h2 {
   
   &.column {
     flex-flow: column nowrap;  
+    &.wrap {
+      flex-wrap: wrap;
+    }
   }
   
   &.row {
     flex-flow: row nowrap;
+    &.wrap {
+      flex-wrap: wrap;
+    }
   }
 }
