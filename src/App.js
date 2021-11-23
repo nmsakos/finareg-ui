@@ -4,6 +4,7 @@ import { FamilyList } from "./Components/Family/FamilyList";
 import { FamilyEditor } from "./Components/Family/FamilyEditor";
 import { Nav } from "./Components/Nav";
 import "./App.scss";
+import "react-datepicker/dist/react-datepicker.css";
 import { faArrowLeft, faCheck, faEdit, faFileInvoiceDollar, faHome, faPencilRuler, faPlus, faSave, faTicketAlt, faTrash, faUndo, faUsers } from "@fortawesome/free-solid-svg-icons";
 import { faCalendarAlt, faCircle, faEye, faMinusSquare, faPlusSquare } from "@fortawesome/free-regular-svg-icons";
 import { library } from "@fortawesome/fontawesome-svg-core";

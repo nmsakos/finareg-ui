@@ -4,7 +4,7 @@ export const PassEventsInfo = ({events}) => {
     }
 
     return (
-        <table><tbody>
+        <table style={{width: "fit-content"}}><tbody>
             <tr>
                 <th>Dátum</th>
                 <th>Állapot</th>

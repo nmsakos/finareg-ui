@@ -11,7 +11,7 @@ import { minusOneIfNull } from "../../utils";
 
 export const PassEventsForm = ({ pass, events, onEventChange, onEventAdd, onEventRemove, hasCompleted }) => {
     return (
-        <table><tbody>
+        <table style={{width: "fit-content"}}><tbody>
             <tr>
                 <th>Dátum</th>
                 <th>Állapot</th>
@@ -31,7 +31,7 @@ export const PassEventsForm = ({ pass, events, onEventChange, onEventAdd, onEven
 
                 const parsed = parseISO(date, "yyyy-MM-dd'T'HH:mm:ddXXX", new Date(), { locale: hu })
 
-                return <tr key={id}>
+                return <tr key={id > 0 ? id : i*(-1)}>
                     <td><DatePicker selected={parsed} onChange={(selDate) => onEventChange(i, { date: format(selDate, "yyyy-MM-dd'T'HH:mm:ddXXX") })} dateFormat="yyyy. MMMM dd, EEEE" locale={hu} /></td>
                     <td><EventStateSelector key={`ess_${id}`} className="form-item-input"
                         onChange={(state) => onEventChange(i, { state: state })}
@@ -60,7 +60,7 @@ export const PassEventsForm = ({ pass, events, onEventChange, onEventAdd, onEven
                 </tr>
             })}
             <tr><td>
-                <button className="button-new-resource" onClick={onEventAdd}><FontAwesomeIcon icon="plus" />Új időpont</button>
+                <button hidden={pass.id < 1} className="button-new-resource" onClick={onEventAdd}><FontAwesomeIcon icon="plus" />Új időpont</button>
             </td></tr>
             <tr><td colSpan="2">
             </td></tr>

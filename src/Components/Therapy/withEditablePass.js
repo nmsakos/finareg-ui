@@ -4,6 +4,7 @@ import { CREATE_THERAPY_EVENT, SAVE_PASS, UPDATE_THERAPY_EVENT } from "../../Gra
 import { LOAD_EVENTS_OF_PASS, LOAD_PASS } from "../../GraphQL/Queries/therapyQueries";
 import { isEqual } from "../../utils";
 import format from "date-fns/format"
+import { useHistory } from "react-router";
 
 export const withEditablePass = (Component) => {
     return props => {
@@ -14,6 +15,8 @@ export const withEditablePass = (Component) => {
 
         const [pass, setPass] = useState(null)
         const [newPass, setNewPass] = useState(null)
+
+        const history = useHistory()
 
         const onChange = (changed) => {
             setNewPass({ ...newPass, ...changed })
@@ -94,7 +97,7 @@ export const withEditablePass = (Component) => {
             return !isNew ? { id: event.id, ...variables } : variables
         }
 
-        const clearFieldsIfNotCmplete = (event) => {
+        const clearFieldsIfNotComplete = (event) => {
             if (event.state.id !== "2") {
                 event.client = null
                 event.therapist = null
@@ -103,7 +106,7 @@ export const withEditablePass = (Component) => {
         }
 
         const saveEvent = async (isNew, event) => {
-            clearFieldsIfNotCmplete(event)
+            clearFieldsIfNotComplete(event)
             const variables = createVariables(isNew, event)
             await client.mutate({
                 mutation: isNew ? CREATE_THERAPY_EVENT : UPDATE_THERAPY_EVENT,
@@ -126,6 +129,10 @@ export const withEditablePass = (Component) => {
             })
             setUpdate(update + 1)
         }
+        
+        const afterSave = (newId) => {
+            history.push(`/passes/${newId}/edit`);
+        }
 
         const savePass = async () => {
             const variables = {
@@ -139,20 +146,25 @@ export const withEditablePass = (Component) => {
                 eventsTaken: newEvents.filter(e => e.state.id === "2").length,
                 invoice: newPass.invoice?.id
             }
-            await client.mutate({
+            const mutated = await client.mutate({
                 mutation: SAVE_PASS,
                 variables: variables,
                 updateQueries: ["getEventsOfPass"]
             });
+            if (passId < 1) {
+                console.log(mutated);
+                const newId = mutated.data.savePass.id
+                afterSave(newId)
+            }
             setUpdate(update + 1)
         }
 
         const onSavePass = () => {
-            if (isEventsChanged()) {
-                saveEvents()
-            }
             if (isChanged()) {
                 savePass()
+            }
+            if (passId > 0 && isEventsChanged()) {
+                saveEvents()
             }
         }
 
@@ -178,30 +190,38 @@ export const withEditablePass = (Component) => {
         }
 
         useEffect(() => {
-            (async () => {
-                const response = await client.query({
-                    query: LOAD_EVENTS_OF_PASS,
-                    variables: {
-                        passId: passId,
-                        noCancelled: false
-                    },
-                    fetchPolicy: "no-cache"
-                });
-                const data = response.data.eventsOfPass
-                setEvents(data)
-                setNewEvents(data)
-            })();
-            (async () => {
-                const response = await client.query({
-                    query: LOAD_PASS,
-                    variables: {
-                        passId: passId
-                    },
-                    fetchPolicy: "no-cache"
-                });
-                setPass(response.data.therapyPass)
-                setNewPass({ ...response.data.therapyPass })
-            })();
+            if (passId && passId > 0) {
+                (async () => {
+                    const response = await client.query({
+                        query: LOAD_EVENTS_OF_PASS,
+                        variables: {
+                            passId: passId,
+                            noCancelled: false
+                        },
+                        fetchPolicy: "no-cache"
+                    });
+                    const data = response.data.eventsOfPass
+                    setEvents(data)
+                    setNewEvents(data)
+                })();
+                (async () => {
+                    const response = await client.query({
+                        query: LOAD_PASS,
+                        variables: {
+                            passId: passId
+                        },
+                        fetchPolicy: "no-cache"
+                    });
+                    setPass(response.data.therapyPass)
+                    setNewPass({ ...response.data.therapyPass })
+                })();
+            } else {
+                const theNewPass = { id: 0, family: null, client: null, therapyType: null, eventCount: 4, eventDuration: null }
+                setNewPass(theNewPass)
+                setPass({ ...theNewPass })
+                setEvents([])
+                setNewEvents([])
+            }
         }, [passId, update]);
 
 

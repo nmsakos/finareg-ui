@@ -3,11 +3,11 @@ export const PassBaseInfo = ({pass}) => {
         <table><tbody>
             <tr>
                 <th>Család</th>
-                <td>{pass.family.name}</td>
+                <td>{pass.family?.name}</td>
             </tr>
             <tr>
                 <th>Kliens</th>
-                <td>{pass.client && pass.client.name}</td>
+                <td>{pass.client?.name}</td>
             </tr>
             <tr>
                 <th>Terápia típus:</th>

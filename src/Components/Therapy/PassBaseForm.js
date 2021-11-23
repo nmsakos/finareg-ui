@@ -7,7 +7,8 @@ import { TherapyTypeSelector } from "./TherapyTypeSelector"
 
 export const PassBaseForm = ({ pass, onChange }) => {
     const [eventCountErrorMsg, setEventCountErrorMsg] = useState("")
-    const { family, client, therapyType, eventCount, eventDuration } = pass
+    const { id: passId, family, client, therapyType, eventCount, eventDuration } = pass
+    console.log(passId);
     const fId = minusOneIfNull(family)
     const cId = minusOneIfNull(client)
     const ttId = minusOneIfNull(therapyType)
@@ -37,7 +38,7 @@ export const PassBaseForm = ({ pass, onChange }) => {
                 <th>Terápia típus:</th>
                 <td><TherapyTypeSelector className="form-item-input"
                     onChange={(therapyType) => onChange({ therapyType: therapyType })}
-                    addAllOption={false} value={ttId} /></td>
+                    addAllOption={passId < 1} value={ttId} /></td>
             </tr>
             <tr>
                 <th>Alkalmak száma:</th>
@@ -49,7 +50,7 @@ export const PassBaseForm = ({ pass, onChange }) => {
                 <th>Időtartam:</th>
                 <td><EventDurationSelector className="form-item-input"
                     onChange={(eventDuration) => onChange({ eventDuration: eventDuration })}
-                    addAllOption={false} value={edId} /></td>
+                    addAllOption={passId < 1} value={edId} /></td>
             </tr>
         </tbody></table>
     )

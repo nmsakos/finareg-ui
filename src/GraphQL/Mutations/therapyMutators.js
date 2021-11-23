@@ -30,3 +30,14 @@ export const SAVE_PASS = gql`
             }
         }
 `
+
+export const CREATE_PASS = gql`
+    mutation createPass($therapyType: ID!, $eventCount: Int, $eventDuration: ID!, 
+        $clientId: ID, $familyId: ID!, $firstEventDate: DateTime, $firstTimeTable: ID!) {
+        createPass(therapyType: $therapyType, eventCount: $eventCount, eventDuration: 
+            $eventDuration, clientId: $clientId, familyId: $familyId, 
+            firstEventDate: $firstEventDate, firstTimeTable: $firstTimeTable) {
+            ${therapyPassBody}
+        }
+    }
+`

@@ -4,7 +4,6 @@ export const withEditableTimeTable = (Component) => {
     return props => {
         const event = props["event"]
         const innerRef = props["innerRef"]
-        const [, setOldEvent] = useState(event)
         const [newEvent, setNewEvent] = useState(event)
 
         useEffect(() => {
@@ -22,7 +21,6 @@ export const withEditableTimeTable = (Component) => {
                     })
                 }
                 setNewEvent(e)
-                setOldEvent(event)
                 if (innerRef && !innerRef.current) {
                     innerRef.current = e
                 }

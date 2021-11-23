@@ -63,8 +63,16 @@ export const LOAD_TIMETABLE = gql`
 `
 
 export const LOAD_TIMETABLE_BY_CLIENT = gql`
-    query getTimeTablesByClient($client: ID!) {
-        timeTablesByClient(client: $client) {
+    query getTimeTablesByClients($clients: [ID!]) {
+        timeTablesByClients(clients: $clients) {
+            ${timeTableBody}
+        }
+    }
+`
+
+export const LOAD_TIMETABLE_BY_CLIENT_AND_THERAPY_TYPE = gql`
+    query getTimeTablesByClientsAndTherapyType($clients: [ID!], $therapyType: ID!) {
+        timeTablesByClientsAndTherapyType(clients: $clients, therapyType: $therapyType) {
             ${timeTableBody}
         }
     }

@@ -1,4 +1,4 @@
-export const Selector = ({ values, addAllOption, onChange, descriptionField, ...props }) => {
+export const Selector = ({ values, addAllOption, onChange, descriptionField, descriptionFun, ...props }) => {
 
     const handleChange = (e) => {
         onChange(values.find(value => value.id === e.target.value))
@@ -10,7 +10,7 @@ export const Selector = ({ values, addAllOption, onChange, descriptionField, ...
                 onChange={handleChange}>
                 {addAllOption && <option value={"-1"} key={"-1"} >Válassz!</option>}
                 {values.map((value, index) =>
-                    <option value={value.id} key={index}>{value[descriptionField]}</option>
+                    <option value={value.id} key={index}>{descriptionFun ? descriptionFun(value) : value[descriptionField]}</option>
                 )}
             </select>
         </div>
