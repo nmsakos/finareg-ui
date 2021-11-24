@@ -18,10 +18,14 @@ export const FamilyInfo = ({ familyId }) => {
             <FamilyBaseInfo family={family} />
             <ParentsPanel parents={parents} />
             <ClientsPanel clients={clients} />
-            <Link to={location.pathname + "/edit"} className="svg-button" >
-                <FontAwesomeIcon icon="edit" size="2x" />
-            </Link>
-
+            <div className="flex-table row" >
+                <Link to={"/families"} className="svg-button" >
+                    <FontAwesomeIcon icon="arrow-left" size="2x" />
+                </Link>
+                <Link to={location.pathname + "/edit"} className="svg-button" >
+                    <FontAwesomeIcon icon="edit" size="2x" />
+                </Link>
+            </div>
         </div>
     ) : <p>Loading...</p>;
 }

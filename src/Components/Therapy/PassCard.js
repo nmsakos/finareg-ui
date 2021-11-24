@@ -44,7 +44,7 @@ export const PassCard = ({ pass }) => {
     return (
         <div className={`familycard${id > 0 ? "" : " new"}`}>
             <div className="familycard__content">
-                <h1>{`${therapyType.description} bérlet`}</h1>
+                <h1 className="card-header" >{`${therapyType.description} bérlet`}</h1>
                 <p className="familycard__sectioncontent">
                     {`${eventCount} x ${eventDuration.description}`}
                 </p>

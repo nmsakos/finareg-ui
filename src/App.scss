@@ -71,6 +71,10 @@ h1 {
   font-size: 24px;
   padding: 20px 0px;
   background-color: inherit;
+
+  &.card-header {
+    text-align: center;
+  }
 }
 
 h2 {

@@ -27,7 +27,7 @@ export const FamilyCard = ({ family }) => {
     return (
         <div className={`familycard${id > 0 ? "" : " new"}`}>
             <div className="familycard__content">
-                <h1>{`${name || "Új"} család`}</h1>
+                <h1 className="card-header" >{`${name || "Új"} család`}</h1>
                 {parentsSection}
                 {clientsSection}
             </div>

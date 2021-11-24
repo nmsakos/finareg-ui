@@ -13,7 +13,6 @@ export const PassEventsTable = ({ events, pass }) => {
             {ReactTooltip.rebuild()}
             <ReactTooltip place="top" type="dark" effect="solid" id="passEventsTable" />
             <div className="flex-table row wrap" style={{ justifyContent: "center" }}>
-                {console.log(events)}
                 {events.filter(e => e.state.id !== "3").map((e, i) => {
                     let icon
                     if (e.state.id === "2") {
