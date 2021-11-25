@@ -136,8 +136,7 @@ export const Bootstrap = () => {
                 const theFamilies = []
                 theFamilies.push(await createFamily({ name: "Hervai" }, [
                     { name: "Hervai Bence", timeTables: [{ dayOfWeek: 1, fromTime: { hour: 14, min: 45 }, toTime: { hour: 15, min: 30 } }] },
-                    { name: "Hervai Gergő", timeTables: [{ dayOfWeek: 4, fromTime: { hour: 13, min: 20 }, toTime: { hour: 14, min: 5 } }] },
-                    { name: "Hervai Marci", timeTables: [{ dayOfWeek: 5, fromTime: { hour: 13, min: 55 }, toTime: { hour: 14, min: 40 } }] }]))
+                    { name: "Hervai Gergő", timeTables: [{ dayOfWeek: 4, fromTime: { hour: 13, min: 20 }, toTime: { hour: 14, min: 5 } }] }]))
                 theFamilies.push(await createFamily({ name: "Muskovics" }, [{ name: "Muskovics Szandi", timeTables: [{ dayOfWeek: 1, fromTime: { hour: 13, min: 55 }, toTime: { hour: 14, min: 40 } }] }]))
                 theFamilies.push(await createFamily({ name: "Sziebig" }, [{ name: "Sziebig Ricsi", timeTables: [{ dayOfWeek: 2, fromTime: { hour: 8, min: 55 }, toTime: { hour: 9, min: 40 } }, { dayOfWeek: 4, fromTime: { hour: 8, min: 55 }, toTime: { hour: 9, min: 40 } }] }]))
                 theFamilies.push(await createFamily({ name: "Buzna" }, [
@@ -157,12 +156,14 @@ export const Bootstrap = () => {
                 theFamilies.push(await createFamily({ name: "Dormán" }, [{ name: "Dormán Áron", timeTables: [{ dayOfWeek: 4, fromTime: { hour: 15, min: 10 }, toTime: { hour: 15, min: 55 } }] }]))
                 theFamilies.push(await createFamily({ name: "Tóth-Oborni" }, [{ name: "Tóth-Oborni Dorka", timeTables: [{ dayOfWeek: 4, fromTime: { hour: 16, min: 0 }, toTime: { hour: 16, min: 30 } }] }]))
                 theFamilies.push(await createFamily({ name: "Dobó" }, [{ name: "Dobó Domi", timeTables: [{ dayOfWeek: 5, fromTime: { hour: 8, min: 55 }, toTime: { hour: 9, min: 40 } }] }]))
-                theFamilies.push(await createFamily({ name: "Höltzl" }, [{ name: "Höltzl Huba", timeTables: [{ dayOfWeek: 5, fromTime: { hour: 13, min: 0 }, toTime: { hour: 13, min: 45 } }] }]))
+                theFamilies.push(await createFamily({ name: "Höltzl" }, [
+                    { name: "Höltzl Huba", timeTables: [{ dayOfWeek: 5, fromTime: { hour: 13, min: 0 }, toTime: { hour: 13, min: 45 } }] },
+                    { name: "Höltzl Marci", timeTables: [{ dayOfWeek: 5, fromTime: { hour: 13, min: 55 }, toTime: { hour: 14, min: 40 } }] }]))
                 theFamilies.push(await createFamily({ name: "Szabó" }, [{ name: "Szabó Barbara", timeTables: [{ dayOfWeek: 3, fromTime: { hour: 15, min: 45 }, toTime: { hour: 16, min: 30 } }] }]))
                 theFamilies.push(await createFamily({ name: "Turcsik" }, [
                     { name: "Turcsik Levente", timeTables: [{ dayOfWeek: 2, fromTime: { hour: 13, min: 15 }, toTime: { hour: 14, min: 0 } }] },
                     { name: "Turcsik Magdi", timeTables: [{ dayOfWeek: 5, fromTime: { hour: 14, min: 50 }, toTime: { hour: 15, min: 35 } }] }]))
-                theFamilies.push(await createFamily({ name: "T" }, [{ name: "T Anti", timeTables: [{ dayOfWeek: 3, fromTime: { hour: 14, min: 10 }, toTime: { hour: 14, min: 55 } }] }]))
+                theFamilies.push(await createFamily({ name: "Tátrai" }, [{ name: "Tátrai Anti", timeTables: [{ dayOfWeek: 3, fromTime: { hour: 14, min: 10 }, toTime: { hour: 14, min: 55 } }] }]))
 
                 setFamilies(theFamilies)
             })()
