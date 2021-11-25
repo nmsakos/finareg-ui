@@ -115,8 +115,8 @@ export const TimeTableWrapper = () => {
             <div className="toolbar">
                 <RoomSelector className="toolbar-dropdown" onChange={setSelectedRoom} addAllOption={true} defaultValue={selectedRoom} />
                 <TherapistSelector className="toolbar-dropdown" onChange={setSelectedTherapist} addAllOption={true} defaultValue={selectedTherapist} />
-                <ModalForm shouldShow={shouldShowModal} onModalSave={onModalSave} onModalCancel={() => setShouldShowModal(false)} entity={newEvent()} ref={modalContent}>
-                    <TimeTableEventForm />
+                <ModalForm shouldShow={shouldShowModal} onModalSave={onModalSave} onModalCancel={() => setShouldShowModal(false)} ref={modalContent}>
+                    <TimeTableEventForm event={newEvent()} />
                 </ModalForm>
                 <FontAwesomeIcon icon="plus" size="2x" className="toolbar-button" onClick={() => {
                     setShouldShowModal(true)

@@ -15,6 +15,7 @@ import { TimeTableEventForm } from "./Components/TimeTable/TimeTableEventForm";
 import { PassInfo } from "./Components/Therapy/PassInfo";
 import { PassForm } from "./Components/Therapy/PassForm";
 import { BaseDataList } from "./Components/Basedata/BaseDataList";
+import { Bootstrap } from "./Bootstrap";
 
 library.add(faHome, faUsers, faEdit, faEye, faSave, faUndo, faPlus,
   faTrash, faArrowLeft, faTicketAlt, faFileInvoiceDollar, faCheck, faCircle,
@@ -54,6 +55,7 @@ function App() {
           <Route path="/passes/:passId/edit" exact render={({ match }) => (
             <PassForm passId={match.params.passId} />
           )} />
+          <Route path="/bootstrap" exact component={Bootstrap} />
         </div>
       </div>
     </div>

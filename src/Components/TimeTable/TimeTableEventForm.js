@@ -9,6 +9,7 @@ import { withEditableTimeTable } from "./withEditableTimeTable"
 
 export const TimeTableEventForm = withEditableTimeTable(({ event, doChange, onClientChange, onClientDelete }) => {
     const {dayOfWeek, fromTime, toTime, therapyType, room, therapist} = event
+    console.log(event);
 
     const formatedFromTime = formatTime(getHourAndMin(fromTime))
     const formatedToTime = formatTime(getHourAndMin(toTime))

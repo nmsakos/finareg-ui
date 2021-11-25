@@ -41,3 +41,15 @@ export const CREATE_PASS = gql`
         }
     }
 `
+
+export const SAVE_THERAPIST = gql`
+    mutation saveTherapist($id: ID!, $name: String!, $phone: String, $email: String) {
+        saveTherapist(id: $id, name: $name, phone: $phone, email: $email) {
+            id 
+            name
+            phone
+            email
+        }
+    }
+`
+
