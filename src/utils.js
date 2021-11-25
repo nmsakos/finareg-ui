@@ -1,4 +1,5 @@
 import { configs } from "./configs";
+import setDate from "date-fns/setDate"
 
 const isFieldEqual = (o1Val, o2Val) => {
 
@@ -120,6 +121,10 @@ export const getHourAndMin = (time) => {
         hour: parseInt(splitAndSlice[0]),
         min: parseInt(splitAndSlice[1])
     };
+}
+
+export const getFirstDayOfWeekInMonth = (dayOfWeek) => {
+    return setDate(new Date(), dayOfWeek, {weekStartsOn: 1})
 }
 
 export const days = [
